@@ -23,8 +23,41 @@ function makeMarkerIcon(markerColor) {
             );
             return markerImage;
         }
+
 //function to popoulate the infowindow with streetview,wikilink
 function populateInfoWindow(marker, infowindow) {
+    function getStreetView(data, status) {
+                    if (status == google.maps.StreetViewStatus.OK) {
+                        var nearStreetViewLocation = data.location.latLng;
+                        var heading = google.maps.geometry.spherical.computeHeading(
+                            nearStreetViewLocation,
+                            marker.position
+                            );
+
+                        // error handling
+                        var errorTimeout = setTimeout(function() {
+                            alert("Something went wrong");
+                        }, 9000);
+                        clearTimeout(errorTimeout);
+
+                        var panoramaOptions = {
+                            position: nearStreetViewLocation,
+                            pov: {
+                                heading: heading,
+                                // this changes the angle of camera whether to look up or down
+                                pitch: 15
+                            }
+                        };
+                        var panorama = new google.maps.StreetViewPanorama(
+                            document.getElementById('panorama'), panoramaOptions
+                            );
+                    } else {
+                        $('#wikipedia-links').text(wikiElem);
+                        $('#panorama').text('');
+                        $('#panorama').append("<span class='text-danger '>No Street View Found</span>");
+                        flag = false;
+                    }
+                }
             // Check to make sure the infowindow is not already opened on this marker.
             if (infowindow.marker != marker) {
                 // Clear the infowindow content to give the streetview time to load.
@@ -53,38 +86,8 @@ function populateInfoWindow(marker, infowindow) {
                 var wiki = false;
 
                 var wikiElem = '';
-                //function to get streetview
-                function getStreetView(data, status) {
-                    if (status == google.maps.StreetViewStatus.OK) {
-                        var nearStreetViewLocation = data.location.latLng;
-                        var heading = google.maps.geometry.spherical.computeHeading(
-                            nearStreetViewLocation, marker.position
-                            );
 
-                        // error handling
-                        var errorTimeout = setTimeout(function() {
-                            alert("Something went wrong");
-                        }, 9000);
-                        clearTimeout(errorTimeout);
 
-                        var panoramaOptions = {
-                            position: nearStreetViewLocation,
-                            pov: {
-                                heading: heading,
-                                // this changes the angle of camera whether to look up or down
-                                pitch: 15
-                            }
-                        };
-                        var panorama = new google.maps.StreetViewPanorama(
-                            document.getElementById('panorama'), panoramaOptions
-                            );
-                    } else {
-                        $('#wikipedia-links').text(wikiElem);
-                        $('#panorama').text('');
-                        $('#panorama').append("<span class='text-danger '>No Street View Found</span>");
-                        flag = false;
-                    }
-                }
 
                 // Use streetview service to get the closest streetview image within
                 // 50 meters of the markers position
@@ -115,7 +118,6 @@ function populateInfoWindow(marker, infowindow) {
                                 }
                             }
                         }
-                        console.log(wikiElem);
 
                         if(flag === false) {
                             $('#wikipedia-links').text(wikiElem);
@@ -199,7 +201,23 @@ function populateInfoWindow(marker, infowindow) {
             });
 
     }
+
 function initMap(){
+    function markerclick(){
+            populateInfoWindow(this,largeInfoWindow);
+            this.setAnimation(google.maps.Animation.BOUNCE);
+                var m = this;
+                setTimeout(function() {
+                    m.setAnimation(null);
+        }, 2000);
+
+    }
+    function markerin(){
+                this.setIcon(highlightedIcon);
+            }
+    function markerout(){
+                this.setIcon(null);
+            }
     //creating the map
         map = new google.maps.Map(document.getElementById('map'),{center: {lat: 28.7041, lng: 77.1025},zoom: 11});
         var largeInfoWindow = new google.maps.InfoWindow();
@@ -216,20 +234,9 @@ function initMap(){
             id: i
         });
         markers.push(marker);
-         marker.addListener('click',function(){
-            populateInfoWindow(this,largeInfoWindow);
-            this.setAnimation(google.maps.Animation.BOUNCE);
-                var m = this;
-                setTimeout(function() {
-                    m.setAnimation(null);
-        }, 2000);
-        });
-         marker.addListener('mouseover', function() {
-                this.setIcon(highlightedIcon);
-            });
-            marker.addListener('mouseout', function() {
-                this.setIcon(null);
-            });
+         marker.addListener('click',markerclick);
+         marker.addListener('mouseover', markerin);
+            marker.addListener('mouseout', markerout);
 
     }
 
