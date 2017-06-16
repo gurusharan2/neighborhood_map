@@ -1,8 +1,8 @@
 # neighborhood_map
 A single-page application featuring a map of your neighborhood.
 
-<h1>api used:</h1>
-<h3>google map api.</h3>
+<h1>Api used:</h1>
+<h3>Google Map Api.</h3>
 <p>Display map markers identifying at least 5 locations that you are interested in within this neighborhood. This app should displays those locations by default when the page is loaded.
 
 A list view of the set of locations is implemented
