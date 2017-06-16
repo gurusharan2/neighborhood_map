@@ -11,6 +11,7 @@ var map;
 var markers = [];
 var marker;
 var placeMarkers = [];
+
 function makeMarkerIcon(markerColor) {
         var markerImage = new google.maps.MarkerImage(
             'https://chart.googleapis.com/chart?chst=d_map_spin&chld=1.15|0|' + markerColor +
@@ -22,6 +23,7 @@ function makeMarkerIcon(markerColor) {
             );
             return markerImage;
         }
+//function to popoulate the infowindow with streetview,wikilink
 function populateInfoWindow(marker, infowindow) {
             // Check to make sure the infowindow is not already opened on this marker.
             if (infowindow.marker != marker) {
@@ -30,7 +32,7 @@ function populateInfoWindow(marker, infowindow) {
                 infowindow.marker = marker;
                 // Make sure the marker property is cleared if the infowindow is closed.
                 infowindow.addListener('closeclick', function() {
-                    if(infowindow.marker != null)
+                    if(infowindow.marker !== null)
                         infowindow.marker.setAnimation(null);
                     infowindow.marker = null;
                 });
@@ -51,12 +53,7 @@ function populateInfoWindow(marker, infowindow) {
                 var wiki = false;
 
                 var wikiElem = '';
-
-
-
-                // In case the status is OK, which means the pano was found, compute the
-                // position of the streetview image, then calculate the heading, then get a
-                // panorama from that and set the options
+                //function to get streetview
                 function getStreetView(data, status) {
                     if (status == google.maps.StreetViewStatus.OK) {
                         var nearStreetViewLocation = data.location.latLng;
@@ -120,7 +117,7 @@ function populateInfoWindow(marker, infowindow) {
                         }
                         console.log(wikiElem);
 
-                        if(flag == false) {
+                        if(flag === false) {
                             $('#wikipedia-links').text(wikiElem);
                             $('#panorama').text("");
                             $('#panorama').append("<span class='text-danger '>No Street View Found</span>");
@@ -130,7 +127,7 @@ function populateInfoWindow(marker, infowindow) {
                         clearTimeout(wikiRequestTimeout);
                     }
                 }).fail(function(jqXHR, textStatus) {
-                    if(jqXHR.status == 0) {
+                    if(jqXHR.status === 0) {
                         alert('You are offline!\n Please check your network.');
                     } else if(jqXHR.status == 404) {
                         alert('HTML Error Callback');
@@ -140,7 +137,7 @@ function populateInfoWindow(marker, infowindow) {
             }
         }
 
-
+//function to hidemarkers
         function hideMarkers(markers){
         for(var i=0;i<markers.length;i++)
         {
@@ -148,6 +145,7 @@ function populateInfoWindow(marker, infowindow) {
 
         }
     }
+//function to create marker for places
     function createMarkersForPlaces(places){
         var bounds = new google.maps.LatLngBounds();
         for(var i=0;i<places.length;i++)
@@ -176,15 +174,17 @@ function populateInfoWindow(marker, infowindow) {
         }
         map.fitBounds(bounds);
     }
+    //function for searchbox
     function searchBoxPlaces(searchbox){
         hideMarkers(placeMarkers);
         var places = searchbox.getPlaces();
         createMarkersForPlaces(places);
-        if(places.length==0)
+        if(places.length===0)
         {
             window.alert("we did not find any place matching to the querry");
         }
     }
+    //function for searchbox when go button is clicked
     function textSearchPlaces(){
         var bounds = map.getBounds();
             hideMarkers(placeMarkers);
@@ -200,6 +200,7 @@ function populateInfoWindow(marker, infowindow) {
 
     }
 function initMap(){
+    //creating the map
         map = new google.maps.Map(document.getElementById('map'),{center: {lat: 28.7041, lng: 77.1025},zoom: 11});
         var largeInfoWindow = new google.maps.InfoWindow();
         var defaultIcon = makeMarkerIcon('0091ff');
@@ -215,7 +216,7 @@ function initMap(){
             id: i
         });
         markers.push(marker);
-        marker.addListener('click',function(){
+         marker.addListener('click',function(){
             populateInfoWindow(this,largeInfoWindow);
             this.setAnimation(google.maps.Animation.BOUNCE);
                 var m = this;
@@ -231,6 +232,7 @@ function initMap(){
             });
 
     }
+
     var searchbox = new google.maps.places.SearchBox(document.getElementById('places-search'));
     searchbox.setBounds(map.getBounds());
     searchbox.addListener('places_changed', function() {
@@ -239,10 +241,12 @@ function initMap(){
             document.getElementById('go-places').addEventListener('click', textSearchPlaces);
 
     }
+//place function
 var Place = function(data){
     this.title = ko.observable(data.title);
     this.location = ko.observable(data.location);
-}
+};
+//main viewmodel
 var ViewModel = function(){
     var self = this;
     this.placeList = ko.observableArray([]);
@@ -258,14 +262,14 @@ var ViewModel = function(){
             bounds.extend(markers[i].position);
         }
         map.fitBounds(bounds);
-    }
+    };
     this.hideListing = function(){
         for(var i=0;i<markers.length;i++)
         {
             markers[i].setMap(null);
 
         }
-    }
+    };
     this.CurrentPlace = function(Place){
             self.currentLoc(Place);
             for(var i=0;i<markers.length;i++){
@@ -281,16 +285,16 @@ google.maps.event.trigger(marker, 'click');
 
             }
 
-    }
+    };
     this.TextSearch = function(){
         textSearchPlaces();
-    }
+    };
 
     this.searchedLocation = ko.observable('');
 
     this.Filter = function(value) {
         self.placeList.removeAll();
-        for(var i in locations) {
+        for(var i=0;i<locations.length;i++) {
             var searchQuery = locations[i].title.toLowerCase();
             // find the starting match in every location
             if(searchQuery.indexOf(value.toLowerCase()) >= 0) {
@@ -314,5 +318,6 @@ google.maps.event.trigger(marker, 'click');
 
     this.searchedLocation.subscribe(this.Filter);
     this.searchedLocation.subscribe(this.FilterForMarkers);
-}
+};
+//binding
 ko.applyBindings(new ViewModel());
