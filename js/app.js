@@ -4,7 +4,6 @@ var locations = [
     {title: 'Qutb Minar', location: {lat: 28.5244, lng: 77.1855}},
     {title: 'India Gate', location: {lat: 28.6129, lng: 77.2295}},
     {title: 'Lotus temple', location: {lat: 28.5535, lng: 77.2588}},
-    {title: 'Rashtrapati bhavan', location: {lat: 28.6144, lng: 77.2166}},
     {title: 'Parliment house', location: {lat: 28.6172, lng: 77.2081}}
     ];
 var map;
@@ -51,12 +50,10 @@ function populateInfoWindow(marker, infowindow) {
                         var panorama = new google.maps.StreetViewPanorama(
                             document.getElementById('panorama'), panoramaOptions
                             );
-                    } else {
-                        $('#wikipedia-links').text(wikiElem);
-                        $('#panorama').text('');
-                        $('#panorama').append("<span class='text-danger '>No Street View Found</span>");
+                    }else{
                         flag = false;
                     }
+
                 }
             // Check to make sure the infowindow is not already opened on this marker.
             if (infowindow.marker != marker) {
@@ -73,16 +70,11 @@ function populateInfoWindow(marker, infowindow) {
                 var streetViewService = new google.maps.StreetViewService();
                 var radius = 50;
 
-                infowindow.setContent(
-                    '<div><h5 class=".h5" id="Title">' +
-                    marker.title +
-                    '</h5></div><div id="wikipedia-links" class="text-left text-info"><p>' +
-                    '</p></div><div id="panorama"></div>'
-                );
+
 
                 infowindow.open(map, marker);
 
-                var flag = true;
+
                 var wiki = false;
 
                 var wikiElem = '';
@@ -91,7 +83,7 @@ function populateInfoWindow(marker, infowindow) {
 
                 // Use streetview service to get the closest streetview image within
                 // 50 meters of the markers position
-                streetViewService.getPanoramaByLocation(marker.position, radius, getStreetView);
+
                 // Open the infowindow on the correct marker.
                 infowindow.open(map, marker);
 
@@ -120,11 +112,19 @@ function populateInfoWindow(marker, infowindow) {
                         }
 
                         if(flag === false) {
-                            $('#wikipedia-links').text(wikiElem);
-                            $('#panorama').text("");
-                            $('#panorama').append("<span class='text-danger '>No Street View Found</span>");
+                            infowindow.setContent(
+                    '<div><h5 class=".h5" id="Title">' +
+                    marker.title +
+                    '</h5></div><div id="wikipedia-links" class="text-left text-info">'+wikiElem+'<p>' +
+                    '</p></div><div id="panorama"><span class="text-danger">No Street View Found</span></div>'
+                );
                         } else {
-                            $('#wikipedia-links').text(wikiElem);
+                            infowindow.setContent(
+                    '<div><h5 class=".h5" id="Title">' +
+                    marker.title +
+                    '</h5></div><div id="wikipedia-links" class="text-left text-info">'+wikiElem+'<p>' +
+                    '</p></div><div id="panorama">'+ streetViewService.getPanoramaByLocation(marker.position, radius, getStreetView) +'</div>'
+                );
                         }
                         clearTimeout(wikiRequestTimeout);
                     }
