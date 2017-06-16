@@ -188,6 +188,7 @@ function populateInfoWindow(marker, infowindow) {
     }
     //function for searchbox when go button is clicked
     function textSearchPlaces(){
+        console.log("hello");
         var bounds = map.getBounds();
             hideMarkers(placeMarkers);
             var placesService = new google.maps.places.PlacesService(map);
@@ -197,6 +198,9 @@ function populateInfoWindow(marker, infowindow) {
             }, function(results, status) {
                 if (status === google.maps.places.PlacesServiceStatus.OK) {
                     createMarkersForPlaces(results);
+                }
+                else{
+                    window.alert("place not found");
                 }
             });
 
@@ -223,29 +227,30 @@ function initMap(){
         var largeInfoWindow = new google.maps.InfoWindow();
         var defaultIcon = makeMarkerIcon('0091ff');
         var highlightedIcon = makeMarkerIcon('ffff24');
+        var bounds = new google.maps.LatLngBounds();
         for(var i=0;i<locations.length;i++)
     {
         var position = locations[i].location;
         var title = locations[i].title;
         var marker = new google.maps.Marker({
-
+            map: map,
             position: position,
             title: title,
+            animation: google.maps.Animation.DROP,
             id: i
         });
         markers.push(marker);
          marker.addListener('click',markerclick);
          marker.addListener('mouseover', markerin);
             marker.addListener('mouseout', markerout);
-
+            bounds.extend(markers[i].position);
     }
-
+    map.fitBounds(bounds);
     var searchbox = new google.maps.places.SearchBox(document.getElementById('places-search'));
     searchbox.setBounds(map.getBounds());
     searchbox.addListener('places_changed', function() {
           searchBoxPlaces(this);
         });
-            document.getElementById('go-places').addEventListener('click', textSearchPlaces);
 
     }
 //place function
@@ -255,7 +260,7 @@ var Place = function(data){
 };
 //main viewmodel
 var ViewModel = function(){
-    function timeout(){
+    function timeout(marker){
                     marker.setAnimation(null);
     }
     var self = this;
@@ -264,31 +269,15 @@ var ViewModel = function(){
         self.placeList.push(new Place(placeitem));
     });
     this.currentLoc = ko.observable(this.placeList()[0] );
-    this.showListing = function(){
-        var bounds = new google.maps.LatLngBounds();
-        for(var i=0;i<markers.length;i++)
-        {
-            markers[i].setMap(map);
-            bounds.extend(markers[i].position);
-        }
-        map.fitBounds(bounds);
-    };
-    this.hideListing = function(){
-        for(var i=0;i<markers.length;i++)
-        {
-            markers[i].setMap(null);
-
-        }
-    };
     this.CurrentPlace = function(Place){
             self.currentLoc(Place);
             for(var i=0;i<markers.length;i++){
-                if(markers[i].title == Place.title())
+                if( Place.title == locations[i].title)
                 {
                     var marker = markers[i];
-            marker.setAnimation(google.maps.Animation.BOUNCE);
-                setTimeout(timeout , 2000);
-google.maps.event.trigger(marker, 'click');
+                    marker.setAnimation(google.maps.Animation.BOUNCE);
+                    setTimeout(timeout(marker) , 2000);
+                    google.maps.event.trigger(marker, 'click');
                 }
 
             }
@@ -299,6 +288,7 @@ google.maps.event.trigger(marker, 'click');
     };
 
     this.searchedLocation = ko.observable('');
+    this.search = ko.observable('');
 
     this.Filter = function(value) {
         self.placeList.removeAll();
@@ -323,7 +313,6 @@ google.maps.event.trigger(marker, 'click');
             }
         }
     };
-
     this.searchedLocation.subscribe(this.Filter);
     this.searchedLocation.subscribe(this.FilterForMarkers);
 };
