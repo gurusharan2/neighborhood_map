@@ -255,6 +255,9 @@ var Place = function(data){
 };
 //main viewmodel
 var ViewModel = function(){
+    function timeout(){
+                    marker.setAnimation(null);
+    }
     var self = this;
     this.placeList = ko.observableArray([]);
     locations.forEach(function(placeitem){
@@ -284,9 +287,7 @@ var ViewModel = function(){
                 {
                     var marker = markers[i];
             marker.setAnimation(google.maps.Animation.BOUNCE);
-                setTimeout(function() {
-                    marker.setAnimation(null);
-        }, 2000);
+                setTimeout(timeout , 2000);
 google.maps.event.trigger(marker, 'click');
                 }
 
