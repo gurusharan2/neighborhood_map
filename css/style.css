@@ -1,0 +1,46 @@
+html, body {    height: 100%; margin: 0; padding: 0; }
+li{
+    padding: 5px 0 0 20px;
+    margin: 0;
+    list-style: none;
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
+    border-right-width: 1px;
+    border-right-style: solid;
+    border-left-width: 1px;
+    border-left-style: solid;
+    border-color: #cccccc;}
+ul,.search{
+    background: #fff;
+    height: 100%;
+    line-height: 35px;
+    padding: 10px 10px 30px 10px;
+    text-align: left;
+    width: 340px;
+    padding: 0;
+
+}
+#panorama{
+        width: 200px;
+        height: 200px;
+    }
+
+.searchComplete {
+    padding: 10px;
+    border-color: #eeeeee;
+    border-width: 2px;
+    border-style: groove;
+    margin: 50px 0 0 10px;
+    width: 25%;
+}
+    #map {
+        border:10px solid #999;;
+        height: 80%;
+        width: 70%;
+        left: 360px;
+        position: absolute;
+    }
+#wikipedia-links{
+    width: 200px;
+    padding: 5px;
+}

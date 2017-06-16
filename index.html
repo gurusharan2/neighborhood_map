@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <title>Delhi</title>
+</head>
+<body>
+<style type="text/css">
+html, body {    height: 100%; margin: 0; padding: 0; }
+li{
+    padding: 5px 0 0 20px;
+    margin: 0;
+    list-style: none;
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
+    border-right-width: 1px;
+    border-right-style: solid;
+    border-left-width: 1px;
+    border-left-style: solid;
+    border-color: #cccccc;}
+ul,.search{
+    background: #fff;
+    height: 100%;
+    line-height: 35px;
+    padding: 10px 10px 30px 10px;
+    text-align: left;
+    width: 340px;
+    padding: 0;
+
+}
+#panorama{
+        width: 200px;
+        height: 200px;
+    }
+
+.searchComplete {
+    padding: 10px;
+    border-color: #eeeeee;
+    border-width: 2px;
+    border-style: groove;
+    margin: 50px 0 0 10px;
+    width: 25%;
+}
+    #map {
+        border:10px solid #999;;
+        height: 80%;
+        width: 70%;
+        left: 360px;
+        position: absolute;
+    }
+#wikipedia-links{
+    width: 200px;
+    padding: 5px;
+}
+
+
+</style>
+
+<div class="row">
+    <h1><center>Delhi</center></h1>
+</div>
+<div class="row">
+<div class="col-md-3 mainlist">
+    <form class="form-horizontal search">
+        <input data-bind="textInput: searchedLocation" type="input" name="search">
+        <input type="button" name="filter" value="filter">
+    </form>
+    <ul  data-bind="foreach: placeList" id="place-list">
+        <li data-bind="text: $data.title,click: $parent.CurrentPlace"></li>
+    </ul>
+    <div>
+        <input data-bind="click: showListing" type="button" class="btn-info" value="Show Places">
+        <input data-bind="click: hideListing" type="button" class="btn-info" value="hide Places">
+    </div>
+    </div>
+    <div id="col-md-9">
+    <div id="map"></div>
+</div>
+</div>
+
+<div class="searchComplete">
+                <span class="text">Search for nearby places</span>
+                <input id="places-search" type="text" placeholder="Ex: Pizza delivery in Chandigarh" autocomplete="off">
+                <input  id="go-places" class="btn-info" type="button" value="Go">
+            </div>
+</div>
+<script src="js/lib/jquery-3.1.1.min.js"></script>
+<script src="js/lib/knockout-3.2.0.js"></script>
+<script type="text/javascript" src="js/app.js"></script>
+<script async defer src="https://maps.googleapis.com/maps/api/js?libraries=places,geometry&key=AIzaSyBFmQpZeiriZI_aaQ81tCorjktwXBC5_xg&v=3&callback=initMap"></script>
+
+</body>
+</html>
