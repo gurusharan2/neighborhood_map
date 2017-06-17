@@ -8,29 +8,29 @@
 </head>
 <body>
 <div class="container">
-    <div class="row">
-        <h1><center>Delhi</center></h1>
-    </div>
-    <div class="row">
-        <div class="col-md-3 mainlist">
-            <form class="form-horizontal search">
-                <input data-bind="textInput: searchedLocation" type="input" name="search">
-                <input type="button" name="filter" value="filter">
-            </form>
-            <ul  data-bind="foreach: placeList" id="place-list">
-                <li data-bind="text: $data.title,click: $parent.CurrentPlace"></li>
-            </ul>
-            <div class="searchComplete">
-                <span class="text">Search for nearby places</span>
-                <input data-bind="value: search" id="places-search" type="text" placeholder="Ex: Pizza delivery in Chandigarh" autocomplete="off">
-                <input id="go-places" class="btn-info" type="button" value="Go">
-            </div>
+<div class="row">
+    <h1><center>Delhi</center></h1>
+</div>
+<div class="row">
+    <div class="col-md-3 mainlist">
+        <form class="form-horizontal search">
+            <input data-bind="textInput: searchedLocation" type="input" name="search">
+            <input type="button" name="filter" value="filter">
+        </form>
+        <ul  data-bind="foreach: placeList" id="place-list">
+            <li data-bind="text: $data.title,click: $parent.CurrentPlace"></li>
+        </ul>
+        <div class="searchComplete">
+            <span class="text">Search for nearby places</span>
+            <input data-bind="value: search" id="places-search" type="text" placeholder="Ex: Pizza delivery in Chandigarh" autocomplete="off">
+            <input id="go-places" class="btn-info" type="button" value="Go">
+        </div>
 
-        </div>
-        <div id="col-md-9">
-            <div id="map"></div>
-        </div>
     </div>
+    <div id="col-md-9">
+        <div id="map"></div>
+    </div>
+</div>
 </div>
 <script src="js/lib/jquery-3.1.1.min.js"></script>
 <script src="js/lib/knockout-3.2.0.js"></script>
