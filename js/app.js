@@ -266,9 +266,9 @@ function timeout(marker){
 }
 var self = this;
 this.placeList = ko.observableArray([]);
-for(var i=0;i<locations.length;i++)
+for(var j=0;j<locations.length;j++)
 {
-    self.placeList.push(locations[i]);
+    self.placeList.push(locations[j]);
 }
 for(var i = 0; i < locations.length; i++) {
     console.log(i);
