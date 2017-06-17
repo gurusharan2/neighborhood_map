@@ -4,6 +4,7 @@ var locations = [
     {title: 'Qutb Minar', location: {lat: 28.5244, lng: 77.1855}},
     {title: 'India Gate', location: {lat: 28.6129, lng: 77.2295}},
     {title: 'Lotus temple', location: {lat: 28.5535, lng: 77.2588}},
+    {title: 'Rashtrapati Bhavan',location: {lat: 28.614321, lng: 77.200687}},
     {title: 'Parliment house', location: {lat: 28.6172, lng: 77.2081}}
     ];
 var map;
@@ -12,47 +13,48 @@ var marker;
 var placeMarkers = [];
 
 function makeMarkerIcon(markerColor) {
-        var markerImage = new google.maps.MarkerImage(
-            'https://chart.googleapis.com/chart?chst=d_map_spin&chld=1.15|0|' + markerColor +
-            '|40|_|%E2%80%A2',
-            new google.maps.Size(21, 34),
-            new google.maps.Point(0, 0),
-            new google.maps.Point(10, 34),
-            new google.maps.Size(21, 34)
-            );
-            return markerImage;
-        }
+    var markerImage = new google.maps.MarkerImage(
+        'https://chart.googleapis.com/chart?chst=d_map_spin&chld=1.15|0|' + markerColor +
+        '|40|_|%E2%80%A2',
+        new google.maps.Size(21, 34),
+        new google.maps.Point(0, 0),
+        new google.maps.Point(10, 34),
+        new google.maps.Size(21, 34)
+    );
+    return markerImage;
+}
 
 //function to popoulate the infowindow with streetview,wikilink
 function populateInfoWindow(marker, infowindow) {
+    var flag = true;
     function getStreetView(data, status) {
-                    if (status == google.maps.StreetViewStatus.OK) {
-                        var nearStreetViewLocation = data.location.latLng;
-                        var heading = google.maps.geometry.spherical.computeHeading(
-                            nearStreetViewLocation,
-                            marker.position
-                            );
+        if (status == google.maps.StreetViewStatus.OK) {
+            var nearStreetViewLocation = data.location.latLng;
+            var heading = google.maps.geometry.spherical.computeHeading(
+                nearStreetViewLocation,
+                marker.position
+                );
 
-                        // error handling
-                        var errorTimeout = setTimeout(function() {
-                            alert("Something went wrong");
-                        }, 9000);
-                        clearTimeout(errorTimeout);
+            // error handling
+            var errorTimeout = setTimeout(function() {
+                alert("Something went wrong");
+            }, 9000);
+            clearTimeout(errorTimeout);
 
-                        var panoramaOptions = {
-                            position: nearStreetViewLocation,
-                            pov: {
-                                heading: heading,
-                                // this changes the angle of camera whether to look up or down
-                                pitch: 15
-                            }
-                        };
-                        var panorama = new google.maps.StreetViewPanorama(
-                            document.getElementById('panorama'), panoramaOptions
-                            );
-                    }else{
-                        flag = false;
-                    }
+            var panoramaOptions = {
+                position: nearStreetViewLocation,
+                pov: {
+                    heading: heading,
+                    // this changes the angle of camera whether to look up or down
+                    pitch: 15
+                }
+            };
+            var panorama = new google.maps.StreetViewPanorama(
+                document.getElementById('panorama'), panoramaOptions
+                );
+        }else{
+            flag = false;
+        }
 
                 }
             // Check to make sure the infowindow is not already opened on this marker.
@@ -187,13 +189,13 @@ function populateInfoWindow(marker, infowindow) {
         }
     }
     //function for searchbox when go button is clicked
-    function textSearchPlaces(){
-        console.log("hello");
+    function textSearchPlaces(value){
+        console.log(value);
         var bounds = map.getBounds();
             hideMarkers(placeMarkers);
             var placesService = new google.maps.places.PlacesService(map);
             placesService.textSearch({
-                query: document.getElementById('places-search').value,
+                query: value,
                 bounds: bounds
             }, function(results, status) {
                 if (status === google.maps.places.PlacesServiceStatus.OK) {
@@ -205,9 +207,12 @@ function populateInfoWindow(marker, infowindow) {
             });
 
     }
-
+function Maperror(){
+    window.alert("something got wrong!!!!");
+}
 function initMap(){
     function markerclick(){
+            console.log("hello");
             populateInfoWindow(this,largeInfoWindow);
             this.setAnimation(google.maps.Animation.BOUNCE);
                 var m = this;
@@ -268,27 +273,36 @@ var ViewModel = function(){
     locations.forEach(function(placeitem){
         self.placeList.push(new Place(placeitem));
     });
-    this.currentLoc = ko.observable(this.placeList()[0] );
-    this.CurrentPlace = function(Place){
-            self.currentLoc(Place);
-            for(var i=0;i<markers.length;i++){
-                if( Place.title == locations[i].title)
-                {
-                    var marker = markers[i];
-                    marker.setAnimation(google.maps.Animation.BOUNCE);
-                    setTimeout(timeout(marker) , 2000);
-                    google.maps.event.trigger(marker, 'click');
-                }
+    for(var i = 0; i < locations.length; i++) {
+        console.log(i);
+        self.placeList()[i].marker = markers[i];
+        }
+    this.CurrentPlace = function(LocClicked) {
 
+        for(var i = 0; i < self.placeList().length; i++) {
+            var title = self.placeList()[i].title;
+            if(LocClicked.title == title) {
+                console.log()
+                this.currentLocation = self.placeList()[i];
+                var marker = markers[i];
             }
-
+        }
+        if(!marker) alert('Something went wrong!');
+        else {
+            marker.setAnimation(google.maps.Animation.BOUNCE);
+            // open an infoWindow when either a location is selected from
+            // the list view or its map marker is selected directly.
+            google.maps.event.trigger(marker, 'click');
+        }
     };
-    this.TextSearch = function(){
-        textSearchPlaces();
+this.search = ko.observable('');
+    this.TextSearch = function(value){
+        console.log(value);
+        textSearchPlaces(value);
     };
 
     this.searchedLocation = ko.observable('');
-    this.search = ko.observable('');
+
 
     this.Filter = function(value) {
         self.placeList.removeAll();
@@ -315,6 +329,9 @@ var ViewModel = function(){
     };
     this.searchedLocation.subscribe(this.Filter);
     this.searchedLocation.subscribe(this.FilterForMarkers);
+    this.search.subscribe(this.TextSearch);
+    this.userName = ko.observable("");        // Initially blank
+    this.userPassword = ko.observable("abc");  // Prepopulate
 };
 //binding
 ko.applyBindings(new ViewModel());

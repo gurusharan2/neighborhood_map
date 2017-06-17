@@ -1,41 +1,40 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-    <link rel="stylesheet" href="css/style.css">
-    <meta name="viewport" content="width= device-width ,initial-scale=1.0">
-    <title>Delhi</title>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<link rel="stylesheet" href="css/style.css">
+<meta name="viewport" content="width= device-width ,initial-scale=1.0">
+<title>Delhi</title>
 </head>
 <body>
 <div class="container">
-<div class="row">
-    <h1><center>Delhi</center></h1>
-</div>
-<div class="row">
-<div class="col-md-3 mainlist">
-    <form class="form-horizontal search">
-        <input data-bind="textInput: searchedLocation" type="input" name="search">
-        <input type="button" name="filter" value="filter">
-    </form>
-    <ul  data-bind="foreach: placeList" id="place-list">
-        <li data-bind="text: $data.title,click: $parent.CurrentPlace"></li>
-    </ul>
-    <div class="searchComplete">
+    <div class="row">
+        <h1><center>Delhi</center></h1>
+    </div>
+    <div class="row">
+        <div class="col-md-3 mainlist">
+            <form class="form-horizontal search">
+                <input data-bind="textInput: searchedLocation" type="input" name="search">
+                <input type="button" name="filter" value="filter">
+            </form>
+            <ul  data-bind="foreach: placeList" id="place-list">
+                <li data-bind="text: $data.title,click: $parent.CurrentPlace"></li>
+            </ul>
+            <div class="searchComplete">
                 <span class="text">Search for nearby places</span>
-                <input data-bind="textInput: search" id="places-search" type="text" placeholder="Ex: Pizza delivery in Chandigarh" autocomplete="off">
-                <input  data-bind="click: TextSearch" id="go-places" class="btn-info" type="button" value="Go">
+                <input data-bind="value: search" id="places-search" type="text" placeholder="Ex: Pizza delivery in Chandigarh" autocomplete="off">
+                <input id="go-places" class="btn-info" type="button" value="Go">
             </div>
 
+        </div>
+        <div id="col-md-9">
+            <div id="map"></div>
+        </div>
     </div>
-    <div id="col-md-9">
-    <div id="map"></div>
-</div>
-</div>
 </div>
 <script src="js/lib/jquery-3.1.1.min.js"></script>
 <script src="js/lib/knockout-3.2.0.js"></script>
 <script type="text/javascript" src="js/app.js"></script>
-<script async defer src="https://maps.googleapis.com/maps/api/js?libraries=places,geometry&key=AIzaSyBFmQpZeiriZI_aaQ81tCorjktwXBC5_xg&v=3&callback=initMap"></script>
-
+<script async defer src="https://maps.googleapis.com/maps/api/js?libraries=places,geometry&key=AIzaSyBFmQpZeiriZI_aaQ81tCorjktwXBC5_xg&v=3&callback=initMap" onerror="Maperror()"></script>
 </body>
 </html>
