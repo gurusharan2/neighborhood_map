@@ -278,13 +278,12 @@ var ViewModel = function(){
         self.placeList()[i].marker = markers[i];
         }
     this.CurrentPlace = function(LocClicked) {
-
+        var marker;
         for(var i = 0; i < self.placeList().length; i++) {
             var title = self.placeList()[i].title;
             if(LocClicked.title == title) {
-                console.log()
                 this.currentLocation = self.placeList()[i];
-                var marker = markers[i];
+                marker = markers[i];
             }
         }
         if(!marker) alert('Something went wrong!');
